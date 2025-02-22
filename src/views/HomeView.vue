@@ -74,7 +74,29 @@ onMounted(() => {
   </button>
     </div>
 
-    <input class="border-2 border-black" v-model="searchName" type="text">
+    <div class="flex items-center gap-2">
+    <!-- Input de búsqueda -->
+    <input 
+        class="border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500" 
+        v-model="searchName" 
+        type="text" 
+        placeholder="Buscar..."
+    >
+
+    <!-- Botones de filtro -->
+    <button
+        v-for="status in statusFilters"
+        :class="[
+            'px-3 py-1 rounded-full text-sm',
+            searchStatus === status ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+        ]"
+        @click="searchByStatus(status)"
+    >
+        {{ status }}
+    </button>
+</div>
+
+    <!-- <input class="border-2 border-black" v-model="searchName" type="text">
     <button
     v-for="status in statusFilters"
     :class="['bg-black text-white p-2 rounded-full', searchStatus === status ? 'bg-blue-500' :'bg-black']" 
@@ -82,7 +104,7 @@ onMounted(() => {
 
     >
     {{ status }}
-    </button>
+    </button> -->
 
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-7 mt-24 mx-10">
       <div v-for="character in filterCharacters" :key="character.id"  class="rounded-2xl overflow-hidden shadow-2xl">
