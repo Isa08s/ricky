@@ -1,12 +1,28 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 
 const characters :  any = ref([])
 const page:any = ref(1)
 const router = useRouter()
+const searchName = ref('')
+const searchStatus = ref('All')
 
+const statusFilters = ['All','Alive','Dead','unknown']
+
+// const pagen = ref(1)
+const filterCharacters = computed (()=>{
+  return characters.value.filter((character:any) => {
+    const matchName = character.name.toLowerCase().includes(searchName.value.toLowerCase())
+    return matchName
+  })
+
+})
+const searchByStatus = (status: string) => {
+  searchStatus.value = status
+  console.log(status)
+}
 const incrementarPage = () => {
   page.value++
   loadCharacters()
@@ -39,6 +55,7 @@ onMounted(() => {
 
 <template>
   <main>
+
     <div class="flex justify-center items-center mt-8">
       <h1 class="text-3xl font-bold">
         Rick y Morty
@@ -57,8 +74,18 @@ onMounted(() => {
   </button>
     </div>
 
+    <input class="border-2 border-black" v-model="searchName" type="text">
+    <button
+    v-for="status in statusFilters"
+    :class="['bg-black text-white p-2 rounded-full', searchStatus === status ? 'bg-blue-500' :'bg-black']" 
+    @click="searchByStatus(status)"
+
+    >
+    {{ status }}
+    </button>
+
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-7 mt-24 mx-10">
-      <div v-for="character in characters" :key="character.id"  class="rounded-2xl overflow-hidden shadow-2xl">
+      <div v-for="character in filterCharacters" :key="character.id"  class="rounded-2xl overflow-hidden shadow-2xl">
         <div @click="seeCharacterDetails(character.id)">
           <img  :src="character.image" alt="character.name">
           <div class="mt-4 text-center">
